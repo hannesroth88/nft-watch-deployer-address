@@ -37,11 +37,11 @@ dotenv.config();
 const discord_js_1 = require("discord.js");
 const config = __importStar(require("./config"));
 const ADDRESS = process.env["ADDRESS"];
-const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
-const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"];
 /* SETUP Discord */
+const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
+console.log(DISCORD_TOKEN);
+const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"];
 const webhookClient = new discord_js_1.WebhookClient({ id: DISCORD_CHANNELID, token: DISCORD_TOKEN });
-const embed = new discord_js_1.EmbedBuilder().setTitle("Some Title").setColor(0x00ffff);
 // MAIN FUNCTION
 main();
 function main() {
@@ -52,9 +52,9 @@ function main() {
             console.log(blockNumber);
             // looking at previous block -1 was not working during test, Sync Etherscan? -> taking -2
             const history = yield provider.getHistory(ADDRESS, blockNumber - 2, blockNumber - 2);
-            console.log(history);
             if (history && history.length > 0) {
                 console.log("NEW TRANSACTION");
+                console.log(history);
                 sendDiscord(JSON.stringify(history, null, 2));
             }
         }));

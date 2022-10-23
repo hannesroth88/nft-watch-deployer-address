@@ -1,16 +1,17 @@
 import * as dotenv from "dotenv"
 dotenv.config()
 import { ethers } from "ethers"
-import { EmbedBuilder, WebhookClient } from "discord.js"
+import { WebhookClient } from "discord.js"
 import * as config from "./config"
 
 const ADDRESS = process.env["ADDRESS"] as string
 
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] as string
+console.log(DISCORD_TOKEN);
+
 const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"] as string
-const webhookClient = new WebhookClient({ id: DISCORD_CHANNELID as string, token: DISCORD_TOKEN })
-const embed = new EmbedBuilder().setTitle("Some Title").setColor(0x00ffff)
+const webhookClient = new WebhookClient({ id: DISCORD_CHANNELID, token: DISCORD_TOKEN })
 
 // MAIN FUNCTION
 main()
