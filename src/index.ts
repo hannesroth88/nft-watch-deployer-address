@@ -8,8 +8,6 @@ const ADDRESS = process.env["ADDRESS"] as string
 
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] as string
-console.log(DISCORD_TOKEN);
-
 const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"] as string
 const webhookClient = new WebhookClient({ id: DISCORD_CHANNELID, token: DISCORD_TOKEN })
 
