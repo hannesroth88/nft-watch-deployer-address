@@ -34,36 +34,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const discord_js_1 = require("discord.js");
-const config = __importStar(require("./config"));
+const config = __importStar(require("../config"));
 const ADDRESS = process.env["ADDRESS"];
-const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
-const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"];
-/* SETUP Discord */
-const webhookClient = new discord_js_1.WebhookClient({ id: DISCORD_CHANNELID, token: DISCORD_TOKEN });
-const embed = new discord_js_1.EmbedBuilder().setTitle("Some Title").setColor(0x00ffff);
 // MAIN FUNCTION
 main();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const provider = config.getProvider("etherscan");
-        console.log({ provider: provider.baseUrl, network: provider._network.name });
+        console.log(provider);
         provider.on("block", (blockNumber) => __awaiter(this, void 0, void 0, function* () {
             console.log(blockNumber);
-            // looking at previous block -1 was not working during test, Sync Etherscan? -> taking -2
-            const history = yield provider.getHistory(ADDRESS, blockNumber - 2, blockNumber - 2);
+            const history = yield provider.getHistory(ADDRESS, blockNumber - 4, blockNumber);
             console.log(history);
-            if (history && history.length > 0) {
-                console.log("NEW TRANSACTION");
-                sendDiscord(JSON.stringify(history, null, 2));
-            }
         }));
-    });
-}
-function sendDiscord(content) {
-    webhookClient.send({
-        content: content,
-        username: "NFT Bot",
-        avatarURL: "https://icons.iconarchive.com/icons/cjdowner/cryptocurrency/512/Ethereum-icon.png",
     });
 }
