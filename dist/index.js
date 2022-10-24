@@ -39,7 +39,6 @@ const config = __importStar(require("./config"));
 const ADDRESS = process.env["ADDRESS"];
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
-console.log(DISCORD_TOKEN);
 const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"];
 const webhookClient = new discord_js_1.WebhookClient({ id: DISCORD_CHANNELID, token: DISCORD_TOKEN });
 // MAIN FUNCTION
