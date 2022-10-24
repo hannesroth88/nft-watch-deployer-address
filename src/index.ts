@@ -6,7 +6,9 @@ import * as config from "./config/config"
 import { Wallet } from "../types/wallet"
 import { History } from "../types/history"
 
+/* Config */
 const wallets = config.getWallets() as Wallet[]
+const provider = config.getProvider("etherscan") as ethers.providers.EtherscanProvider
 
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] as string
@@ -17,7 +19,6 @@ const webhookClient = new WebhookClient({ id: DISCORD_CHANNELID, token: DISCORD_
 main()
 
 async function main() {
-    const provider = config.getProvider("etherscan") as ethers.providers.EtherscanProvider
     console.log({ provider: provider.baseUrl, network: provider._network.name })
 
     provider.on("block", async (blockNumber) => {

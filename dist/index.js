@@ -36,7 +36,9 @@ const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const discord_js_1 = require("discord.js");
 const config = __importStar(require("./config/config"));
+/* Config */
 const wallets = config.getWallets();
+const provider = config.getProvider("etherscan");
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
 const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"];
@@ -45,7 +47,6 @@ const webhookClient = new discord_js_1.WebhookClient({ id: DISCORD_CHANNELID, to
 main();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const provider = config.getProvider("etherscan");
         console.log({ provider: provider.baseUrl, network: provider._network.name });
         provider.on("block", (blockNumber) => __awaiter(this, void 0, void 0, function* () {
             console.log(blockNumber);
