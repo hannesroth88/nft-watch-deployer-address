@@ -35,8 +35,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const discord_js_1 = require("discord.js");
-const config = __importStar(require("./config"));
-const ADDRESS = process.env["ADDRESS"];
+const config = __importStar(require("./config/config"));
+const wallets = config.getWallets();
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
 const DISCORD_CHANNELID = process.env["DISCORD_CHANNELID"];
@@ -49,12 +49,22 @@ function main() {
         console.log({ provider: provider.baseUrl, network: provider._network.name });
         provider.on("block", (blockNumber) => __awaiter(this, void 0, void 0, function* () {
             console.log(blockNumber);
-            // looking at previous block -1 was not working during test, Sync Etherscan? -> taking -2
-            const history = yield provider.getHistory(ADDRESS, blockNumber - 2, blockNumber - 2);
-            if (history && history.length > 0) {
-                console.log("NEW TRANSACTION");
-                console.log(history);
-                sendDiscord(JSON.stringify(history, null, 2));
+            const histories = [];
+            for (const wallet of wallets) {
+                // looking at previous block -1 was not working during test, Sync Etherscan? -> taking -2
+                const txResponse = yield provider.getHistory(wallet.address, blockNumber - 2, blockNumber - 2);
+                if (txResponse && txResponse.length > 0) {
+                    const history = { txResponse: txResponse, wallet: wallet };
+                    histories.push(history);
+                    console.log("NEW TRANSACTION");
+                    console.log(history);
+                }
+            }
+            if (histories && histories.length > 0) {
+                sendDiscord(JSON.stringify(histories, null, 2));
+            }
+            else {
+                console.log("no new Tx");
             }
         }));
     });

@@ -1,6 +1,8 @@
 import * as dotenv from "dotenv"
 dotenv.config()
 import { ethers } from "ethers"
+import { Wallet } from "../../types/wallet"
+import jsonWallets from "./wallets.json"
 
 const INFURA_API_KEY = process.env["INFURA_API_KEY"]
 const ETHERSCAN_API_KEY = process.env["ETHERSCAN_API_KEY"]
@@ -17,7 +19,11 @@ const providers: {
     localnode: new ethers.providers.JsonRpcProvider(JSONRPC_URL, ETHEREUM_NETWORK),
 }
 
-export function getProvider(providerName: string):any {
+export function getProvider(providerName: string): any {
     // @ts-ignore
     return providers[providerName]
+}
+
+export function getWallets(): Wallet[] {
+    return jsonWallets
 }

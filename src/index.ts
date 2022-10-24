@@ -2,9 +2,11 @@ import * as dotenv from "dotenv"
 dotenv.config()
 import { ethers } from "ethers"
 import { WebhookClient } from "discord.js"
-import * as config from "./config"
+import * as config from "./config/config"
+import { Wallet } from "../types/wallet"
+import { History } from "../types/history"
 
-const ADDRESS = process.env["ADDRESS"] as string
+const wallets = config.getWallets() as Wallet[]
 
 /* SETUP Discord */
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"] as string
@@ -21,13 +23,25 @@ async function main() {
     provider.on("block", async (blockNumber) => {
         console.log(blockNumber)
 
-        // looking at previous block -1 was not working during test, Sync Etherscan? -> taking -2
-        const history = await provider.getHistory(ADDRESS, blockNumber - 2, blockNumber - 2)
-        if (history && history.length > 0) {
-            console.log("NEW TRANSACTION")
-            console.log(history)
-
-            sendDiscord(JSON.stringify(history, null, 2))
+        const histories: History[] = []
+        for (const wallet of wallets) {
+            // looking at previous block -1 was not working during test, Sync Etherscan? -> taking -2
+            const txResponse = await provider.getHistory(
+                wallet.address,
+                blockNumber - 2,
+                blockNumber - 2
+            )
+            if (txResponse && txResponse.length > 0) {
+                const history: History = { txResponse: txResponse, wallet: wallet }
+                histories.push(history)
+                console.log("NEW TRANSACTION")
+                console.log(history)
+            }
+        }
+        if (histories && histories.length > 0) {
+            sendDiscord(JSON.stringify(histories, null, 2))
+        } else {
+            console.log("no new Tx");
         }
     })
 }
